@@ -23,7 +23,7 @@ public class JavaGenerics1 {
         System.out.println(maksChar(c));
         System.out.println();
 
-        // En generisk maks-funsksjon som støtter alle objekter som implemeterer Comparable
+        // En generisk maks-funsksjon som støtter alle objekter som implementerer Comparable
         Integer[] v2 = {2,4,10,2,3,99,4,0};
         System.out.println(maks(v2));
         Character[] c2 = {'A','F','H','Z','L','P'};
