@@ -1,6 +1,3 @@
-import jdk.jshell.EvalException;
-
-import java.io.PrintStream;
 import java.util.Arrays;
 
 public class Recursion1 {
@@ -28,13 +25,17 @@ public class Recursion1 {
             System.out.println(xi + " er i indeks " + binarySearch(x,xi));
         }
         // Sjekk hvordan metoden fungerer for verdier som ikke er i tabellen
-        System.out.println(binarySearch(x, 25));
+        int[] vals = {-1, 25, 100};
+        for (int v : vals){
+            System.out.println("Fant ikke " + v +
+                    ", skulle stått i indeks " + (-binarySearch(x, v) - 1));
+        }
 
         // Rekursive permutasjoner
         int[] p0 = {1,2,3};
+        System.out.println();
         permutation(p0);
-
-        int[] p1 = {1,2,3,4,5,6};
+        int[] p1 = {1,2,3,4};
         permutation(p1);
 
     }
@@ -67,18 +68,14 @@ public class Recursion1 {
             // Bladnode i binærtreet - sjekk om vi har funnet veriden
             return (x[left] == value) ? left : -(left + 1);
         }
-        int middle = (left + right)/2;
-        if (x[middle] <= value){
-            // Sjekk om vi har funnet verdien i en intern node
-            if (x[middle] == value) return middle;
-            // Søk i høyre gren
-            return binarySearch(x, value, middle+1, right);
-        }
-        else {
-            // Søk i venstre gren
-            return binarySearch(x, value, left, middle-1);
-        }
-
+        // Finn indeks til midterste verdi
+        int m = (left + right)/2;
+        // Sjekk om vi har funnet verdien i en intern node
+        if (x[m] == value) return m;
+        // Søk i høyre gren
+        else if (value > x[m]) return binarySearch(x, value, m+1, right);
+        // Søk i venstre gren
+        else return binarySearch(x, value, left, m-1);
     }
 
     public static void permutation(int[] x){
