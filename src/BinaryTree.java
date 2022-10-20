@@ -103,7 +103,7 @@ public class BinaryTree {
 
         printBreadthFirst(bt.root);
 
-        char[] values2 = "TLEØSOM".toCharArray();
+        char[] values2 = "!GTALDA".toCharArray();
         BinaryTree bt2 = new BinaryTree(values2);
 
         printBreadthFirst(bt2.root);
