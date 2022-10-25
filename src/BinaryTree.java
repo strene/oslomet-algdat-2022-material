@@ -9,28 +9,41 @@ public class BinaryTree {
         char value;
         Node leftChild;
         Node rightChild;
+        Node parent;
 
         Node(char value){
             this.value = value;
+            this.parent = null;
+            this.leftChild = null;
+            this.rightChild = null;
+        }
+
+        Node(Node parent, char value){
+            this.value = value;
+            this.parent = parent;
             this.leftChild = null;
             this.rightChild = null;
         }
 
         Node addLeftChild(char value){
-            this.leftChild = new Node(value);
+            this.leftChild = new Node(this, value);
             return this.leftChild;
         }
 
         Node addRightChild(char value){
-            this.rightChild = new Node(value);
+            this.rightChild = new Node(this, value);
             return this.rightChild;
         }
 
     }
 
+    BinaryTree(){
+        root = null;
+    }
+
     BinaryTree(char[] values){
 
-        this.root = new Node(values[0]);
+        this.root = new Node(null, values[0]);
         ArrayDeque<Node> queue = new ArrayDeque<>();
         queue.addLast(root);
 
@@ -43,9 +56,42 @@ public class BinaryTree {
                 current.addRightChild(values[i+1]);
                 queue.addLast(current.rightChild);
             }
-            i +=2;
-            System.out.println(i);
+            i += 2;
         }
+    }
+
+    void insert(char value){
+
+        if (root == null) {root = new Node(value);}
+        else {insert(root, value);}
+
+    }
+
+    static void insert(Node current, char value){
+
+        if (value < current.value){
+            // value er mindre - gå til venstre
+            if (current.leftChild == null) {
+                // Basistilfelle - legg til node
+                current.leftChild = new Node(current, value);
+            }
+            else {
+                // Rekursivt kall med venstre barn
+                insert(current.leftChild, value);
+            }
+        }
+        else {
+            // value er større enn eller lik - gå til høyre
+            if (current.rightChild == null) {
+                // Basistilfelle - legg til node
+                current.rightChild = new Node(current, value);
+            }
+            else {
+                // Rekursivt kall med høyre barn
+                insert(current.rightChild, value);
+            }
+        }
+
     }
 
     static void printBreadthFirst(Node root){
@@ -64,15 +110,24 @@ public class BinaryTree {
         }
     }
 
+    void printDepthFirst(int order){
+        printDepthFirst(root, order);
+    }
+
     static void printDepthFirst(Node node, int order){
 
         if (node == null){
             return;
         }
+        // Preorden
         if (order == 1) System.out.print(node.value + " ");
+        // Rekursivt kall med venstre barn
         printDepthFirst(node.leftChild, order);
+        // Inorden
         if (order == 2) System.out.print(node.value + " ");
+        // Rekursivt kall med høyre barn
         printDepthFirst(node.rightChild, order);
+        // Postorden
         if (order == 3) System.out.print(node.value + " ");
 
     }
@@ -96,6 +151,36 @@ public class BinaryTree {
 
     }
 
+    static Node nextPreorder(Node p){
+
+        if (p.leftChild != null) {
+            // p har ventre barn - det er neste i preorden
+            return p.leftChild;
+        }
+        else if (p.rightChild != null){
+            // p har ikke ventre barn, men høyre barn - det er neste i preorden
+            return p.rightChild;
+        }
+        else {
+            // p har ingen barn - traverser oppover til p er venstre barn og
+            // parent har et høyre barn, eller parent == null
+            Node parent = p.parent;
+            while (parent != null &&
+                    (parent.rightChild == null || parent.rightChild == p)){
+                parent = parent.parent;
+                p = p.parent;
+            }
+            if (parent != null) {
+                // p er venstre barn - parent sitt høyre barn er neste i preorden
+                return parent.rightChild;
+            }
+            else {
+                return null;
+            }
+        }
+
+    }
+
     public static void main(String[] args){
 
         char[] values = "ABCDEFGHIJKLM".toCharArray();
@@ -115,6 +200,24 @@ public class BinaryTree {
         printDepthFirst(bt2.root,3);
         System.out.println();
         printDepthFirstIterative(bt2.root);
+
+        System.out.println();
+
+        char[] algdat = "ALZGDXYAT".toCharArray();
+
+        BinaryTree sbt = new BinaryTree();
+        for (char value : algdat){
+            sbt.insert(value);
+        }
+        sbt.printDepthFirst(1);
+
+        System.out.println();
+        Node p = sbt.root;
+        while (p != null){
+            System.out.print(p.value + " ");
+            p = nextPreorder(p);
+        }
+
 
     }
 
